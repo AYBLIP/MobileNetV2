@@ -1,52 +1,52 @@
 import streamlit as st
-import numpy as np
-from PIL import Image
 import tensorflow as tf
-import pickle
+from tensorflow.keras.preprocessing import image
+import numpy as np
 
-# Daftar optimizer yang tersedia
-optimizer_options = ['Adam', 'SGD', 'RMSprop']
-
-st.title("Aplikasi Klasifikasi Kue dengan Pilihan Optimizer")
+st.title("Klasifikasi Kue dengan Streamlit")
 
 # Pilihan optimizer
-optimizer_choice = st.selectbox("Pilih optimizer saat inferensi", optimizer_options)
+optimizer_options = ['Adam', 'SGD', 'RMSprop']
+optimizer_choice = st.selectbox("Optimizer", optimizer_options)
 
-# Muat model sesuai optimizer yang dipilih (asumsikan kamu punya model berbeda untuk tiap optimizer)
-@st.cache_resource
-def load_model(optimizer):
-    # Contoh: muat model berbeda tergantung optimizer
-    # Ganti path sesuai model kamu
-    model_path = f'best_model_{optimizer}.keras'
-    model = tf.keras.models.load_model(model_path)
-    return model
+# Path model
+model_path = f'best_model_{optimizer_choice}.keras'
 
-# Muat model sesuai pilihan
-model = load_model(optimizer_choice)
+# Muat model
+try:
+    model = tf.keras.models.load_model(
+        model_path,
+        # Tidak perlu lagi custom_objects karena fungsi dan kelas dihapus
+    )
+    st.success(f"Model {optimizer_choice} berhasil dimuat.")
+except:
+    model = None
+    st.error(f"Gagal memuat model dari {model_path}. Pastikan file model tersedia.")
 
-st.write(f"Model yang digunakan: {optimizer_choice}")
+# Daftar kelas
+kelas = ['Kue Dadar Gulung', 'Kue Kastengel', 'Kue Klepon', 'Kue Lapis', 'Kue Lumpur', 'Kue Putri Salju', 'Kue Risoles', 'Kue Serabi']
 
-# Upload gambar
-uploaded_file = st.file_uploader("Pilih gambar kue", type=["jpg", "jpeg", "png"])
+# Unggah beberapa gambar sekaligus
+uploaded_files = st.file_uploader("Unggah beberapa gambar kue Anda", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
 
-if uploaded_file is not None:
-    image = Image.open(uploaded_file)
-    # Pastikan gambar dalam mode RGB
-    if image.mode != 'RGB':
-        image = image.convert('RGB')
-    st.image(image, caption='Gambar yang diunggah', use_column_width=True)
-    
-    # Preprocessing gambar sesuai model
-    image_resized = image.resize((224, 224))
-    img_array = np.array(image_resized) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
-    
-    # Prediksi
-    pred = model.predict(img_array)
-    pred_index = np.argmax(pred)
-    kelas_kue = ['Kue 1', 'Kue 2', 'Kue 3', 'Kue 4', 'Kue 5', 'Kue 6', 'Kue 7', 'Kue 8']
-    kelas_terpilih = kelas_kue[pred_index]
-    confidence = pred[0][pred_index]
-    
-    st.write(f"Klasifikasi: **{kelas_terpilih}**")
-    st.write(f"Kepercayaan: {confidence:.2f}")
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        # Baca gambar
+        img = image.load_img(uploaded_file, target_size=(224, 224))
+        st.image(img, caption=uploaded_file.name, use_container_width=1)
+
+        # Pra-pemrosesan gambar
+        img_array = image.img_to_array(img)
+        img_array = np.expand_dims(img_array, axis=0) / 255.0
+
+        # Prediksi jika model berhasil dimuat
+        if model:
+            pred = model.predict(img_array)
+            pred_kelas = np.argmax(pred, axis=1)[0]
+            kelas_terpilih = kelas[pred_kelas]
+            confidence = np.max(pred) * 100
+
+            st.write(f"Prediksi: **{kelas_terpilih}**")
+            st.write(f"Kepercayaan: {confidence:.2f}%")
+        else:
+            st.warning("Model belum berhasil dimuat. Harap pilih optimizer dan pastikan file model tersedia.")
