@@ -47,6 +47,6 @@ if uploaded_files:
             confidence = np.max(pred) * 100
 
             st.write(f"Prediksi: **{kelas_terpilih}**")
-            st.write(f"Kepercayaan: {confidence:.2f}%")
+            st.write(f"Akurasi: {confidence:.2f}%")
         else:
             st.warning("Model belum berhasil dimuat. Harap pilih optimizer dan pastikan file model tersedia.")
