@@ -31,7 +31,7 @@ uploaded_file = st.file_uploader("Pilih gambar kue", type=["jpg", "jpeg", "png"]
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption='Gambar yang diunggah', use_column_width=1)
+    st.image(image, caption='Gambar yang diunggah', use_container_width =True)
     
     # Preprocessing gambar sesuai model
     image_resized = image.resize((224, 224))
