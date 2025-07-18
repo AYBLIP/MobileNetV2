@@ -17,7 +17,6 @@ model_path = f'best_model_{optimizer_choice}.keras'
 try:
     model = tf.keras.models.load_model(
         model_path,
-        }
     )
     st.success(f"Model {optimizer_choice} berhasil dimuat.")
 except:
