@@ -17,7 +17,7 @@ optimizer_choice = st.selectbox("Pilih optimizer saat inferensi", optimizer_opti
 def load_model(optimizer):
     # Contoh: muat model berbeda tergantung optimizer
     # Ganti path sesuai model kamu
-    model_path = f'model_{optimizer}.keras'
+    model_path = f'best_model_{optimizer}.keras'
     model = tf.keras.models.load_model(model_path)
     return model
 
