@@ -31,7 +31,10 @@ uploaded_file = st.file_uploader("Pilih gambar kue", type=["jpg", "jpeg", "png"]
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption='Gambar yang diunggah', use_container_width =True)
+    # Pastikan gambar dalam mode RGB
+    if image.mode != 'RGB':
+        image = image.convert('RGB')
+    st.image(image, caption='Gambar yang diunggah', use_column_width=True)
     
     # Preprocessing gambar sesuai model
     image_resized = image.resize((224, 224))
