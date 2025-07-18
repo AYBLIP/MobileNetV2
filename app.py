@@ -5,14 +5,6 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 
 st.title("Klasifikasi Kue dengan Streamlit")
-@register_keras_serializable()
-def swish(x):
-    return x * tf.nn.sigmoid(x)
-
-@register_keras_serializable()
-class FixedDropout(tf.keras.layers.Dropout):
-    def call(self, inputs, training=None):
-        return super().call(inputs, training=True)
 # Pilihan optimizer
 optimizer_options = ['Adam', 'SGD', 'RMSprop']
 optimizer_choice = st.selectbox("Optimizer", optimizer_options)
@@ -25,9 +17,6 @@ model_path = f'best_model_{optimizer_choice}.keras'
 try:
     model = tf.keras.models.load_model(
         model_path,
-        custom_objects={
-            'FixedDropout': FixedDropout,
-            'swish': swish
         }
     )
     st.success(f"Model {optimizer_choice} berhasil dimuat.")
