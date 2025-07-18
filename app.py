@@ -13,7 +13,7 @@ st.title("Aplikasi Klasifikasi Kue dengan Pilihan Optimizer")
 optimizer_choice = st.selectbox("Pilih optimizer saat inferensi", optimizer_options)
 
 # Muat model sesuai optimizer yang dipilih (asumsikan kamu punya model berbeda untuk tiap optimizer)
-@st.cache_resource(allow_output_mutation=True)
+@st.cache_data(allow_output_mutation=True)
 def load_model(optimizer):
     # Contoh: muat model berbeda tergantung optimizer
     # Ganti path sesuai model kamu
