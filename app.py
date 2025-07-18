@@ -5,7 +5,7 @@ import tensorflow as tf
 import pickle
 
 # Daftar optimizer yang tersedia
-optimizer_options = ['adam', 'sgd', 'rmsprop']
+optimizer_options = ['Adam', 'SGD', 'RMSprop']
 
 st.title("Aplikasi Klasifikasi Kue dengan Pilihan Optimizer")
 
@@ -17,21 +17,21 @@ optimizer_choice = st.selectbox("Pilih optimizer saat inferensi", optimizer_opti
 def load_model(optimizer):
     # Contoh: muat model berbeda tergantung optimizer
     # Ganti path sesuai model kamu
-    model_path = f'path_ke_model_{optimizer}.h5'
+    model_path = f'model_{optimizer}.keras'
     model = tf.keras.models.load_model(model_path)
     return model
 
 # Muat model sesuai pilihan
 model = load_model(optimizer_choice)
 
-st.write(f"Model yang digunakan: {optimizer_choice.upper()}")
+st.write(f"Model yang digunakan: {optimizer_choice}")
 
 # Upload gambar
 uploaded_file = st.file_uploader("Pilih gambar kue", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file)
-    st.image(image, caption='Gambar yang diunggah', use_column_width=True)
+    st.image(image, caption='Gambar yang diunggah', use_column_width=1)
     
     # Preprocessing gambar sesuai model
     image_resized = image.resize((224, 224))
